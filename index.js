@@ -14,6 +14,11 @@ app.get("/", (req, res) => {
   console.log("rota get acessada");
 });
 
+app.get("/teste", (req, res) => {
+  res.send("get teste");
+  console.log("rota get acessada");
+});
+
 app.post("/", (req, res) => {
   const data = req.body;
 
