@@ -5,6 +5,7 @@ const port = 3000;
 app.use(express.json());
 app.get("/", (req, res) => {
   res.send("get ok");
+  console.log("rota get acessada");
 });
 
 app.post("/", (req, res) => {
