@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <script>
+        function mudarFundo() {
+            const body = document.body;
+            const currentColor = body.style.backgroundColor;
+            body.style.backgroundColor = currentColor === 'blue' ? 'white' : 'blue';
+        }
+    </script>
 </head>
 <body>
     <h1>
@@ -13,7 +20,27 @@
     <div>
         <a href="/musics">lista de musicas</a> 
         <a href="add_music">adicionar musica</a>
-        teste
+    </div>
+
+    <div>
+        <h2>Dados da API:</h2>
+        <pre><%= JSON.stringify(data, null, 2) %></pre> <!-- Exibe os dados da API -->
+        <p>Status: <%= data.status %></p>
+        <% if (data.response && data.response.objects) { %>
+            <% data.response.objects.forEach(function(object) { %>
+                <p>ID: <%= object.id %></p>
+                <p>Size: <%= object.size %></p>
+                <p>Created At: <%= object.created_at %></p>
+                <audio controls>
+                    <source src="https://public-blob.squarecloud.dev/<%= object.id %>?Authorization=<%= apiKey %>" type="audio/mpeg">
+                    Seu navegador não suporta o elemento de áudio.
+                </audio>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <div>
+        <button onclick="mudarFundo()">Mudar Fundo</button> <!-- Botão para mudar o fundo -->
     </div>
 </body>
 </html>
