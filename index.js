@@ -12,6 +12,9 @@ app.set("views", "./app/views");
 app.set("view engine", "ejs");
 const port = process.env.PORT || 3000;
 
+// Servir arquivos estáticos do Bootstrap
+app.use(express.static(__dirname + "/node_modules/bootstrap/dist"));
+
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
@@ -39,7 +42,7 @@ app.get("/", async (req, res) => {
     const options = {
       method: "GET",
       headers: {
-        Authorization: process.env.SQUARE_API_KEY,
+        Authorization: apiKey,
       },
     };
 

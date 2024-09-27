@@ -1,46 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/public/styles/index.css" />
     <title>Home</title>
     <script>
-        function mudarFundo() {
-            const body = document.body;
-            const currentColor = body.style.backgroundColor;
-            body.style.backgroundColor = currentColor === 'blue' ? 'white' : 'blue';
+      function mudarFundo() {
+        const body = document.body;
+        if (body.classList.contains("bg-dark")) {
+          body.classList.remove("bg-dark", "text-white");
+          body.classList.add("bg-light", "text-dark");
+        } else {
+          body.classList.remove("bg-light", "text-dark");
+          body.classList.add("bg-dark", "text-white");
         }
+      }
+
+      let mediaRecorder;
+      let audioChunks = [];
+
+      function startRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder.start();
+
+          mediaRecorder.addEventListener("dataavailable", (event) => {
+            audioChunks.push(event.data);
+          });
+
+          mediaRecorder.addEventListener("stop", () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = document.getElementById("audioPlayback");
+            audio.src = audioUrl;
+            audioChunks = [];
+          });
+        });
+      }
+
+      function stopRecording() {
+        mediaRecorder.stop();
+      }
     </script>
-</head>
-<body>
-    <h1>
-        Bem vindo
-    </h1>
-
+  </head>
+  <body class="container-fluid bg-dark text-white">
+    <header class="p-3 text-bg-dark">
+      <div class="container">
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+        >
+          <h1 class="fw-bold title">Bem vindo</h1>
+          <ul
+            class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+          >
+            <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+            <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+            <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+            <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+          </ul>
+          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+            <input
+              type="search"
+              class="form-control form-control-dark text-bg-dark"
+              placeholder="Search..."
+              aria-label="Search"
+            />
+          </form>
+          <div class="text-end">
+            <button type="button" class="btn btn-outline-light me-2">
+              Login
+            </button>
+            <button type="button" class="btn btn-warning">Sign-up</button>
+            <button
+              type="button"
+              onclick="mudarFundo()"
+              class="btn btn-warning"
+            >
+              Mudar Fundo
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
     <div>
-        <a href="/musics">lista de musicas</a> 
-        <a href="add_music">adicionar musica</a>
+      <a href="/musics" class="btn btn-primary">Lista de músicas</a>
+      <a href="/add_music" class="btn btn-success">Adicionar música</a>
     </div>
 
-    <div>
-        <h2>Dados da API:</h2>
-        <pre><%= JSON.stringify(data, null, 2) %></pre> <!-- Exibe os dados da API -->
-        <p>Status: <%= data.status %></p>
-        <% if (data.response && data.response.objects) { %>
-            <% data.response.objects.forEach(function(object) { %>
-                <p>ID: <%= object.id %></p>
-                <p>Size: <%= object.size %></p>
-                <p>Created At: <%= object.created_at %></p>
-                <audio controls>
-                    <source src="https://public-blob.squarecloud.dev/<%= object.id %>?Authorization=<%= apiKey %>" type="audio/mpeg">
-                    Seu navegador não suporta o elemento de áudio.
-                </audio>
-            <% }); %>
-        <% } %>
+    <h2>Dados da API:</h2>
+    <div class="card">
+      <div class="card-header">Título da música</div>
+      <% if (data.response && data.response.objects) { %> <%
+      data.response.objects.forEach(function(object) { %>
+      <div class="card-body">
+        <p class="card-title">ID: <%= object.id %></p>
+        <p class="card-text">Size: <%= object.size %></p>
+        <p class="card-text">Created At: <%= object.created_at %></p>
+        <audio controls class="mt-2 audio-player">
+          <source
+            src="https://public-blob.squarecloud.dev/<%= object.id %>?Authorization=<%= apiKey %>"
+            type="audio/mpeg"
+          />
+          Seu navegador não suporta o elemento de áudio.
+        </audio>
+        <a href="#" class="btn btn-primary">Editar</a>
+      </div>
+      <% }); %> <% } %>
     </div>
 
-    <div>
-        <button onclick="mudarFundo()">Mudar Fundo</button> <!-- Botão para mudar o fundo -->
+    <div class="mt-4">
+      <button onclick="startRecording()" class="btn btn-danger">
+        Iniciar Gravação
+      </button>
+      <button onclick="stopRecording()" class="btn btn-secondary">
+        Parar Gravação
+      </button>
+      <audio id="audioPlayback" controls class="mt-2 audio-player"></audio>
     </div>
-</body>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
