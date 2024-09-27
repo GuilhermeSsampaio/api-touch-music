@@ -1,6 +1,10 @@
 const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const dotenv = require("dotenv");
+
+// Carregar variáveis de ambiente do arquivo .env
+dotenv.config();
 
 const app = express();
 app.engine("ejs", require("ejs").__express);
