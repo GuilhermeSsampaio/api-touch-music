@@ -1,7 +1,10 @@
 const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const multer = require("multer");
 const dotenv = require("dotenv");
+const path = require("path");
+const fs = require("fs");
 
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -11,6 +14,18 @@ app.engine("ejs", require("ejs").__express);
 app.set("views", "./app/views");
 app.set("view engine", "ejs");
 const port = process.env.PORT || 3000;
+
+// Configurar o armazenamento do multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 // Servir arquivos estáticos do Bootstrap
 app.use(express.static(__dirname + "/node_modules/bootstrap/dist"));
@@ -42,7 +57,7 @@ app.get("/", async (req, res) => {
     const options = {
       method: "GET",
       headers: {
-        Authorization: apiKey,
+        Authorization: process.env.SQUARE_API_KEY,
       },
     };
 
@@ -59,6 +74,47 @@ app.get("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro ao buscar dados da API");
+  }
+});
+
+const FormData = require("form-data"); // Importar o pacote form-data
+
+app.post("/upload", upload.single("audio"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhum arquivo foi enviado." });
+    }
+
+    const fetch = (await import("node-fetch")).default;
+    const formData = new FormData(); // Usar o FormData do pacote form-data
+    const fileStream = fs.createReadStream(req.file.path);
+
+    // Anexar o arquivo ao formData
+    formData.append("file", fileStream, req.file.filename);
+
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: apiKey, // A autorização pode ser configurada separadamente
+        ...formData.getHeaders(), // Adicionar os cabeçalhos apropriados de form-data
+      },
+      body: formData,
+    };
+
+    const response = await fetch(
+      `https://blob.squarecloud.app/v1/objects?name=teeeeste`,
+      options
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    res.json({ message: "Áudio enviado com sucesso!", data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao enviar o áudio");
   }
 });
 
