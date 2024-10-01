@@ -49,7 +49,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const apiKey = process.env.SQUARE_API_KEY;
+const apiKey = process.env.SQUARECLOUD_API_KEY;
 
 app.get("/", async (req, res) => {
   try {
@@ -57,7 +57,7 @@ app.get("/", async (req, res) => {
     const options = {
       method: "GET",
       headers: {
-        Authorization: process.env.SQUARE_API_KEY,
+        Authorization: apiKey,
       },
     };
 
@@ -85,6 +85,8 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
       return res.status(400).json({ error: "Nenhum arquivo foi enviado." });
     }
 
+    const fileName = req.query.name || "default-name"; // Capturar o nome do arquivo da query
+
     const fetch = (await import("node-fetch")).default;
     const formData = new FormData(); // Usar o FormData do pacote form-data
     const fileStream = fs.createReadStream(req.file.path);
@@ -95,14 +97,17 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
     const options = {
       method: "POST",
       headers: {
-        Authorization: apiKey, // A autorização pode ser configurada separadamente
-        ...formData.getHeaders(), // Adicionar os cabeçalhos apropriados de form-data
+        Authorization: apiKey,
+        ...formData.getHeaders(),
       },
       body: formData,
     };
 
+    // Usar o nome dinâmico do arquivo na URL
     const response = await fetch(
-      `https://blob.squarecloud.app/v1/objects?name=teeeeste`,
+      `https://blob.squarecloud.app/v1/objects?name=${encodeURIComponent(
+        fileName
+      )}`,
       options
     );
 

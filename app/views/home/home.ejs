@@ -76,6 +76,15 @@
       <form id="audioForm">
         <label for="audioUpload">Selecione um arquivo de áudio: </label>
         <input type="file" id="audioUpload" accept="audio/*" />
+
+        <label for="fileName">Digite o nome do arquivo: </label>
+        <input
+          type="text"
+          id="fileName"
+          placeholder="Nome do arquivo"
+          required
+        />
+
         <button type="submit">Enviar</button>
       </form>
 
@@ -99,7 +108,7 @@
       }
       document.addEventListener("DOMContentLoaded", function () {
         const audioUpload = document.getElementById("audioUpload");
-        const audioPreview = document.getElementById("audioPreview");
+        const fileNameInput = document.getElementById("fileName"); // Capturar o campo de nome do arquivo
         const audioForm = document.getElementById("audioForm");
 
         // Preview do audio
@@ -107,7 +116,7 @@
           const file = audioUpload.files[0];
           if (file) {
             const audioUrl = URL.createObjectURL(file);
-            audioPreview.src = audioUrl;
+            document.getElementById("audioPreview").src = audioUrl;
           }
         });
 
@@ -117,11 +126,13 @@
 
           const formData = new FormData();
           const file = audioUpload.files[0];
+          const fileName = fileNameInput.value; // Obter o nome do arquivo do input
 
           if (file) {
             formData.append("audio", file);
 
-            fetch("/upload", {
+            // Fazer a requisição POST com o nome do arquivo incluído na URL
+            fetch(`/upload?name=${encodeURIComponent(fileName)}`, {
               method: "POST",
               body: formData,
             })
