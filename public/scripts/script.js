@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           console.log("Áudio enviado com sucesso:", data);
+          alert("Audio enviado!");
         })
         .catch((error) => {
           console.error("Erro ao enviar o áudio:", error);

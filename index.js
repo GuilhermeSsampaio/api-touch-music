@@ -13,6 +13,8 @@ const app = express();
 app.engine("ejs", require("ejs").__express);
 app.set("views", "./app/views");
 app.set("view engine", "ejs");
+app.use(express.static("./public")); // Certifique-se de que a pasta 'public' é acessível
+
 const port = process.env.PORT || 3000;
 
 // Configurar o armazenamento do multer
