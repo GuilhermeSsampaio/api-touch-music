@@ -34,3 +34,5 @@ CREATE TABLE SONGS (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (audio_id) REFERENCES audios(id)
 );
+
+-- drop database TOUCH_MUSIC;
