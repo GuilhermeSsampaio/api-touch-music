@@ -126,7 +126,18 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
 });
 
 app.get("/musics", (req, res) => {
-  res.render("music/musics.ejs");
+  const mysql = require("mysql");
+  const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "admin",
+    database: "touch_music",
+  });
+
+  connection.query("select * from songs", (error, result) => {
+    res.render("music/musics.ejs", { songs: result });
+    // res.send(result);
+  });
 });
 
 app.get("/add_music", (req, res) => {

@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/public/styles/index.css" />
+    <script src="/scripts/script.js"></script>
+
     <title>Listagem</title>
 </head>
-<body>
+<body class="container-fluid bg-dark text-white">
     <h1>
-        Música
+        Músicas
     </h1>
     
+   
+      <% if (songs.length >0) { %>
+    <div class="row">
+      <% for(let i = 0; i<songs.length; i++){%>
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title"><%= songs[i].title %></h5>
+            </div>
+            <div class="card-body">
+              <!-- <h5 class="card-title"> </h5> -->
+              <p class="card-text"> Progressão de acordes: <%= songs[i].chords %></p>
+            </div>
+          </div>
+        </div>
+        <% } %>
+    </div>
+    <% }else { %>
+      <p>Nenhuma música encontrada</p>
+      <% } %>
 </body>
 </html>

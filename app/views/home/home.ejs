@@ -9,51 +9,11 @@
 
     <title>Home</title>
   </head>
-  <body class="container-fluid bg-dark text-white">
-    <header class="p-3 text-bg-dark">
-      <div class="container">
-        <div
-          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
-        >
-          <h1 class="fw-bold title">Bem vindo</h1>
-          <ul
-            class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-          >
-            <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
-            <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-            <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-            <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-            <li><a href="#" class="nav-link px-2 text-white">About</a></li>
-          </ul>
-          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-            <input
-              type="search"
-              class="form-control form-control-dark text-bg-dark"
-              placeholder="Search..."
-              aria-label="Search"
-            />
-          </form>
-          <div class="text-end">
-            <button type="button" class="btn btn-outline-light me-2">
-              Login
-            </button>
-            <button type="button" class="btn btn-warning">Sign-up</button>
-            <button
-              type="button"
-              onclick="mudarFundo()"
-              class="btn btn-warning"
-            >
-              Mudar Fundo
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-    <!-- <div>
-      <a href="/musics" class="btn btn-primary">Lista de músicas</a>
-      <a href="/add_music" class="btn btn-success">Adicionar música</a>
-    </div> -->
 
+  <body class="container-fluid bg-dark text-white">
+    <%- include('../partials/header.ejs') %> <!-- Incluindo o cabeçalho -->
+
+    <!-- Conteúdo da página -->
     <h2>Dados da API:</h2>
 
     <% if (data.response && data.response.objects && data.response.objects.length > 0) { %>
@@ -86,7 +46,7 @@
     <% } %>
     
     </div>
-    <div class="container">
+    <div class="container-fluid">
       <form id="audioForm">
         <label for="audioUpload">Selecione um arquivo de áudio: </label>
         <input type="file" id="audioUpload" accept="audio/*" />
