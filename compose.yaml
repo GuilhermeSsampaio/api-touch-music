@@ -1,14 +1,39 @@
+version: "3"
 services:
+  backend:
+    build:
+      context: . # A raiz do projeto é o contexto do backend
+      dockerfile: Dockerfile # O Dockerfile do backend está na raiz do projeto
+    container_name: backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app # Mapeia a raiz do projeto (onde está o backend)
+    working_dir: /usr/src/app # Diretório de trabalho para o backend
+    env_file: .env # Usa o arquivo .env na raiz do projeto
+    environment:
+      SQUARECLOUD_API_KEY: ${SQUARECLOUD_API_KEY}
+      DATABASE_PASSWORD_SUPABASE: ${DATABASE_PASSWORD_SUPABASE}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    command: node index.js # Executa o backend
+
   database:
-    image: music-db
+    build:
+      context: ./db # A pasta "db" contém o Dockerfile do banco de dados
+      dockerfile: Dockerfile # Especifica o Dockerfile do banco de dados dentro da pasta db
+    container_name: music-db
     environment:
       MYSQL_DATABASE: Music
       MYSQL_USER: Gui
       MYSQL_PASSWORD: "admin"
       MYSQL_ROOT_PASSWORD: "admin"
     ports:
-      - "80:80"
+      - "3307:3306" # Porta padrão do MySQL
     volumes:
       - db-volume:/var/lib/mysql
+
 volumes:
   db-volume:
