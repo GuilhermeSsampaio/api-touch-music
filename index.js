@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const multer = require("multer");
 const dotenv = require("dotenv");
+const mysql = require("mysql");
 const path = require("path");
 const fs = require("fs");
 
@@ -14,7 +15,6 @@ app.engine("ejs", require("ejs").__express);
 app.set("views", "./app/views");
 app.set("view engine", "ejs");
 app.use(express.static("./public")); // Certifique-se de que a pasta 'public' é acessível
-
 const port = process.env.PORT || 3000;
 
 // Configurar o armazenamento do multer
@@ -52,6 +52,22 @@ app.use((req, res, next) => {
 });
 
 const apiKey = process.env.SQUARECLOUD_API_KEY;
+
+// Configurar a conexão com o banco de dados MySQL
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error("Erro ao conectar ao banco de dados:", err);
+    return;
+  }
+  console.log("Conectado ao banco de dados MySQL");
+});
 
 app.get("/", async (req, res) => {
   try {
@@ -126,17 +142,13 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
 });
 
 app.get("/musics", (req, res) => {
-  const mysql = require("mysql");
-  const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "admin",
-    database: "touch_music",
-  });
+  connection.query("SELECT * FROM SONGS", (error, results) => {
+    if (error) {
+      console.error("Erro ao executar a consulta:", error);
+      return res.status(500).send("Erro ao executar a consulta");
+    }
 
-  connection.query("select * from songs", (error, result) => {
-    res.render("music/musics.ejs", { songs: result });
-    // res.send(result);
+    res.render("music/musics.ejs", { songs: results });
   });
 });
 

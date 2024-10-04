@@ -1,1 +1,3 @@
  docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=Music -e MYSQL_USER=admin -e MYSQL_PASSWORD=root music-db
+Artigo q usei:
+https://johnfercher.medium.com/mysql-docker-7ff6d50d6cf1
