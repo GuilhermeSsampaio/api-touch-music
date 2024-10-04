@@ -1,7 +1,14 @@
 services:
   database:
-    image: mysql
+    image: touchmusic-db
     environment:
-      MYSQL_ROOT_PASSWORD: "ADMIN"
+      MYSQL_DATABASE: Music
+      MYSQL_USER: Gui
+      MYSQL_PASSWORD: "admin"
+      MYSQL_ROOT_PASSWORD: "admin"
     ports:
       - "3306:3306"
+    volumes:
+      - db-volume:/var/lib/mysql
+volumes:
+  db-volume:
