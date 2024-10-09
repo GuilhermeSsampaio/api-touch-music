@@ -9,6 +9,31 @@ function mudarFundo() {
   }
 }
 
+function deletar(objectId) {
+  const confirmDelete = confirm("Tem certeza que deseja deletar este áudio?");
+  if (confirmDelete) {
+    fetch(
+      `/delete_audio?name=${encodeURIComponent(
+        `https://public-blob.squarecloud.dev/${objectId}`
+      )}`,
+      {
+        method: "DELETE",
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          alert("Áudio deletado com sucesso!");
+          location.reload(); // Recarregar a página após a exclusão
+        } else {
+          alert("Erro ao deletar áudio.");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição de exclusão:", error);
+      });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const audioUpload = document.getElementById("audioUpload");
   const fileNameInput = document.getElementById("fileName"); // Capturar o campo de nome do arquivo

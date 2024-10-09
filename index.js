@@ -6,6 +6,11 @@ const dotenv = require("dotenv");
 const mysql = require("mysql");
 const path = require("path");
 const fs = require("fs");
+const { SquareCloudBlob } = require("@squarecloud/blob");
+
+const apiKey = process.env.SQUARECLOUD_API_KEY;
+
+const blob = new SquareCloudBlob(apiKey); // Mova a inicialização do blob para o escopo do app
 
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -51,15 +56,13 @@ app.use((req, res, next) => {
   next();
 });
 
-const apiKey = process.env.SQUARECLOUD_API_KEY;
-
 // Configurar a conexão com o banco de dados MySQL
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: 3307,
+  // port: 3307,
 });
 
 connection.connect((err) => {
@@ -97,6 +100,40 @@ app.get("/", async (req, res) => {
 });
 
 const FormData = require("form-data"); // Importar o pacote form-data
+
+app.delete("/delete_audio", async (req, res) => {
+  try {
+    const fileName = req.query.name; // Captura o nome do arquivo da query string
+
+    if (!fileName) {
+      return res.status(400).json({ error: "O nome do arquivo é necessário." });
+    }
+
+    // Extrair ID e nome do objeto da URL
+    const urlParts = new URL(fileName).pathname.split("/").filter(Boolean);
+
+    // Verifique se a estrutura da URL é válida
+    if (urlParts.length < 2) {
+      return res.status(400).json({ error: "URL inválida." });
+    }
+
+    const id = urlParts[0]; // ID do objeto
+    const objectName = urlParts[1]; // Nome do objeto (neste caso, o prefixo está incluído no nome)
+
+    // Formatar a string do objeto para exclusão
+    const objectToDelete = `${id}/${objectName}`; // Formato esperado pelo SDK
+    console.log("ID:", id);
+    console.log("Object Name:", objectName);
+    console.log("Object to delete:", objectToDelete);
+    // Chamar o método de exclusão
+    await blob.objects.delete([objectToDelete]);
+
+    res.json({ message: "Áudio deletado com sucesso!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao deletar o áudio");
+  }
+});
 
 app.post("/upload", upload.single("audio"), async (req, res) => {
   try {
