@@ -7,14 +7,12 @@ const mysql = require("mysql");
 const path = require("path");
 const fs = require("fs");
 const { SquareCloudBlob } = require("@squarecloud/blob");
-
+// Carregar variáveis de ambiente do arquivo .env
+dotenv.config();
 //chave
 const apiKey = process.env.SQUARECLOUD_API_KEY;
 
 const blob = new SquareCloudBlob(apiKey); // Mova a inicialização do blob para o escopo do app
-
-// Carregar variáveis de ambiente do arquivo .env
-dotenv.config();
 
 const app = express();
 app.engine("ejs", require("ejs").__express);
