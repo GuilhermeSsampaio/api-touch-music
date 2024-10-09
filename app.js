@@ -1,4 +1,5 @@
-const express = require("express");
+// const express = require("express");
+const app = require("./config/server.js");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const multer = require("multer");
@@ -14,11 +15,12 @@ const apiKey = process.env.SQUARECLOUD_API_KEY;
 
 const blob = new SquareCloudBlob(apiKey); // Mova a inicialização do blob para o escopo do app
 
-const app = express();
-app.engine("ejs", require("ejs").__express);
-app.set("views", "./app/views");
-app.set("view engine", "ejs");
-app.use(express.static("./public")); // Certifique-se de que a pasta 'public' é acessível
+// const app = express();
+//coisa do gpt isso ai
+// app.engine("ejs", require("ejs").__express);
+// app.set("views", "./app/views");
+// app.set("view engine", "ejs");
+// app.use(express.static("./public")); // Certifique-se de que a pasta 'public' é acessível
 const port = process.env.PORT || 3000;
 
 // Configurar o armazenamento do multer
@@ -33,10 +35,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Servir arquivos estáticos do Bootstrap
-app.use(express.static(__dirname + "/node_modules/bootstrap/dist"));
+// // Servir arquivos estáticos do Bootstrap
+// app.use(express.static(__dirname + "/node_modules/bootstrap/dist"));
 
-app.use(express.json());
+// app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
