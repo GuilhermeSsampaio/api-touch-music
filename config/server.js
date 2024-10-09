@@ -11,7 +11,7 @@ app.set("views", path.join(__dirname, "../app/views"));
 app.use(express.static(path.join(__dirname, "../public"))); // Pasta public
 app.use(express.static(path.join(__dirname, "../node_modules/bootstrap/dist"))); // Bootstrap
 
-// consign().include("app/routes").into(app); //escaneira o diretorio routes para achar rotas
+// consign().include("app/routes").then("config/dbConnection.js").into(app);
 
 app.use(helmet());
 app.use(morgan("dev"));

@@ -16,7 +16,7 @@ connection.connect((err) => {
   console.log("Conectado ao banco de dados MySQL");
 });
 
-router.get("/", (req, res) => {
+router.get("/musics", (req, res) => {
   connection.query("SELECT * FROM SONGS", (error, results) => {
     if (error) {
       console.error("Erro ao executar a consulta:", error);
