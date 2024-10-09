@@ -8,6 +8,7 @@ const path = require("path");
 const fs = require("fs");
 const { SquareCloudBlob } = require("@squarecloud/blob");
 
+//chave
 const apiKey = process.env.SQUARECLOUD_API_KEY;
 
 const blob = new SquareCloudBlob(apiKey); // Mova a inicialização do blob para o escopo do app
