@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const dbConnection = require("../../config/dbConnection");
-const connection = dbConnection;
+const connection = dbConnection();
 
 connection.connect((err) => {
   if (err) {

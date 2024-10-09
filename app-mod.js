@@ -12,6 +12,21 @@ const port = process.env.PORT || 3000;
 app.use(helmet());
 app.use(morgan("dev"));
 
+// Configurar Content Security Policy
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src 'self' https://public-blob.squarecloud.dev"
+  );
+  next();
+});
+
+// Configurar Cross-Origin-Embedder-Policy
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+  next();
+});
+
 // Configurar rotas
 const homeRoutes = require("./app/routes/home.js");
 const musicRoutes = require("./app/routes/music.js");
